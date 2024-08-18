@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+    'books',
 ]
 
 MIDDLEWARE = [
@@ -125,3 +126,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # User Model
 AUTH_USER_MODEL = "users.User"
+
+# Path where uploaded media files are saved
+MEDIA_ROOT = BASE_DIR.joinpath('media')
+
+# URL to access media files in development
+MEDIA_URL = '/media/'
+
