@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -39,9 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'books',
+    'api',
+    'ninja',
+    'ninja_extra',
+    'ninja_jwt',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -133,3 +139,16 @@ MEDIA_ROOT = BASE_DIR.joinpath('media')
 # URL to access media files in development
 MEDIA_URL = '/media/'
 
+# Cors setting
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]  # React app URL
+CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
+
+FRONTEND_URL = '127.0.0.1:5173'
+
+# JWT Settings
+NINJA_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # Access token lifetime
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     # Refresh token lifetime
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
