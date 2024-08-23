@@ -3,7 +3,7 @@ from ninja.security import django_auth
 from .schema import UserSchema, ApiResponseSchema
 from typing import List
 from users.models import User
-from .response import api_response
+from .utils import api_response
 
 router = Router(tags=['users'])
 
