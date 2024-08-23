@@ -6,7 +6,7 @@ from .user_api import router as users_router
 from ninja.errors import ValidationError,AuthenticationError,HttpError
 from .utils import api_response
 
-api = NinjaExtraAPI(title='BookStore',docs=Swagger(),csrf=True)
+api = NinjaExtraAPI(title='PersianCCBooks',docs=Swagger(),csrf=True)
 
 # jwt controler
 api.register_controllers(NinjaJWTDefaultController)
