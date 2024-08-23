@@ -1,16 +1,14 @@
 from ninja import Router
-from ninja.security import django_auth
 from .schema import UserSchema, ApiResponseSchema
 from typing import List
 from users.models import User
 from .utils import api_response
+from .auth import CustomJWTAuth
 
 router = Router(tags=['users'])
 
 
-
-
-@router.get("/", response=List[UserSchema],auth=django_auth)
+@router.get("/", response=List[UserSchema],auth=CustomJWTAuth())
 def get_all_users(request):
     if request.user.is_superuser:
         users = User.objects.all()
@@ -34,7 +32,7 @@ def get_all_users(request):
         )
         
 
-@router.get("/{user_id}", response=UserSchema,auth=django_auth)
+@router.get("/{user_id}", response=UserSchema,auth=CustomJWTAuth())
 def get_user(request, user_id: int):
     if request.user.is_superuser or request.user.id == user_id:
         try:
@@ -55,7 +53,7 @@ def get_user(request, user_id: int):
                 status_code=404
             )
         
-@router.put("/{user_id}", response={200: UserSchema, 404: str},auth=django_auth)
+@router.put("/{user_id}", response={200: UserSchema, 404: str},auth=CustomJWTAuth())
 def update_user(request, user_id: int, payload: UserSchema):
     try:
         user = User.objects.get(id=user_id)
@@ -102,7 +100,7 @@ def update_user(request, user_id: int, payload: UserSchema):
                 status_code=404
             )
 
-@router.delete("/{user_id}", response=ApiResponseSchema,auth=django_auth)
+@router.delete("/{user_id}", response=ApiResponseSchema,auth=CustomJWTAuth())
 def delete_user(request, user_id: int):
     try:
         user = User.objects.get(id=user_id)
