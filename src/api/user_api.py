@@ -148,13 +148,20 @@ def delete_user(request, user_id: int):
     Returns:
         ApiResponseSchema: A schema indicating success or failure of the delete operation.
     """
-    try:
+    try: 
         user = User.objects.get(id=user_id)
-        user.delete()
-        return api_response(
+        if user.is_superuser or user == request.user:
+            user.delete()
+            return api_response(
                 success=True,
                 message="User deleted successfully.",
                 status_code=200
+            )
+        else:
+            return api_response(
+                success=False,
+                message="You don't have the premission to delete this user.",
+                status_code=403
             )
     except User.DoesNotExist:
         return api_response(
