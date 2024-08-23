@@ -22,11 +22,23 @@ from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
+# ============================
+# Auth Management Endpoints
+# ============================
 router = Router(tags=['auth'])
 
 
 @router.get("/set-csrf-token", response=ApiResponseSchema)
 def get_csrf_token(request):
+    """
+    Retrieve the CSRF token for the current session.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        ApiResponseSchema: A schema containing the CSRF token and a success message.
+    """
     return api_response(
         success=True,
         message="csrf fetched successfully.",
@@ -36,6 +48,16 @@ def get_csrf_token(request):
 
 @router.post("/login", response=ApiResponseSchema)
 def login_view(request, payload: SignInSchema):
+    """
+    Authenticate a user and log them in.
+
+    Args:
+        request: The HTTP request object.
+        payload (SignInSchema): The user's login credentials.
+
+    Returns:
+        ApiResponseSchema: A schema indicating success or failure of the login attempt.
+    """
     user = authenticate(request, username=payload.email, password=payload.password)
     if user is not None:
         login(request, user)
@@ -54,6 +76,15 @@ def login_view(request, payload: SignInSchema):
 
 @router.post("/logout",response=ApiResponseSchema, auth=CustomJWTAuth())
 def logout_view(request):
+    """
+    Log the current user out of the system.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        ApiResponseSchema: A schema indicating success of the logout operation.
+    """
     logout(request)
     return api_response(
         success=True,
@@ -65,6 +96,16 @@ def logout_view(request):
 
 @router.post("/register", response=ApiResponseSchema)
 def register(request, payload: SignInSchema):
+    """
+    Register a new user and send a verification email.
+
+    Args:
+        request: The HTTP request object.
+        payload (SignInSchema): The user's registration details.
+
+    Returns:
+        ApiResponseSchema: A schema indicating success or failure of the registration process.
+    """
     try:
         # Create the user
         user = User.objects.create_user(username=payload.email, email=payload.email, password=payload.password)
@@ -102,6 +143,16 @@ def register(request, payload: SignInSchema):
     
 @router.post("/verify-email", response=ApiResponseSchema)
 def verify_email(request, payload: EmailVerificationSchema):
+    """
+    Verify the user's email address using the provided token.
+
+    Args:
+        request: The HTTP request object.
+        payload (EmailVerificationSchema): The email verification details including token and user ID.
+
+    Returns:
+        ApiResponseSchema: A schema indicating success or failure of the email verification process.
+    """
     try:
         # Decode the user ID from the uid
         user_id = force_str(urlsafe_base64_decode(payload.user_id))
@@ -138,6 +189,16 @@ def verify_email(request, payload: EmailVerificationSchema):
     
 @router.post("/change-password", response=ApiResponseSchema, auth=CustomJWTAuth())
 def change_password(request, data: ChangePasswordSchema):
+    """
+    Change the password for the authenticated user.
+
+    Args:
+        request: The HTTP request object.
+        data (ChangePasswordSchema): The current and new passwords.
+
+    Returns:
+        ApiResponseSchema: A schema indicating success or failure of the password change operation.
+    """
     user = request.user
 
     # Check if current password is correct
@@ -183,6 +244,16 @@ def change_password(request, data: ChangePasswordSchema):
 
 @router.post("/reset-password", response=ApiResponseSchema)
 def request_password_reset(request, data: PasswordResetRequestSchema):
+    """
+    Request a password reset and send a reset email.
+
+    Args:
+        request: The HTTP request object.
+        data (PasswordResetRequestSchema): The email address for password reset.
+
+    Returns:
+        ApiResponseSchema: A schema indicating success or failure of the password reset request.
+    """
     try:
         user = User.objects.get(email=data.email)
     except User.DoesNotExist:
@@ -217,6 +288,17 @@ def request_password_reset(request, data: PasswordResetRequestSchema):
 
 @router.post("/reset-password-confirm", response=ApiResponseSchema)
 def password_reset_confirm(request, data: PasswordResetConfirmSchema):
+    """
+    Confirm and complete the password reset process.
+
+    Args:
+        request: The HTTP request object.
+        data (PasswordResetConfirmSchema): The new password and token details.
+
+    Returns:
+        ApiResponseSchema: A schema indicating success or failure of the password reset confirmation.
+    """
+    
     # Decode the user ID from the uid
     try:
         user_id = force_str(urlsafe_base64_decode(data.user_id))
