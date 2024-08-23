@@ -5,11 +5,24 @@ from users.models import User
 from .utils import api_response
 from .auth import CustomJWTAuth
 
+
+# ============================
+# User Management Endpoints
+# ============================
 router = Router(tags=['users'])
 
 
 @router.get("/", response=List[UserSchema],auth=CustomJWTAuth())
 def get_all_users(request):
+    """
+    Retrieve all users from the database. Only accessible by superusers.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        ApiResponseSchema: A schema containing a list of users and a success message.
+    """
     if request.user.is_superuser:
         users = User.objects.all()
 
@@ -34,6 +47,17 @@ def get_all_users(request):
 
 @router.get("/{user_id}", response=UserSchema,auth=CustomJWTAuth())
 def get_user(request, user_id: int):
+    """
+    Retrieve a specific user by their ID. Accessible by superusers or the user themselves.
+
+    Args:
+        request: The HTTP request object.
+        user_id (int): The ID of the user to retrieve.
+
+    Returns:
+        ApiResponseSchema: A schema containing user details and a success message.
+        ApiResponseSchema: A schema indicating failure if the user is not found.
+    """
     if request.user.is_superuser or request.user.id == user_id:
         try:
             # user = get_object_or_404(User, id=id)
@@ -55,6 +79,18 @@ def get_user(request, user_id: int):
         
 @router.put("/{user_id}", response={200: UserSchema, 404: str},auth=CustomJWTAuth())
 def update_user(request, user_id: int, payload: UserSchema):
+    """
+    Update user details for a specific user. Only the user themselves or superusers can perform updates.
+
+    Args:
+        request: The HTTP request object.
+        user_id (int): The ID of the user to update.
+        payload (UserSchema): The data to update for the user.
+
+    Returns:
+        ApiResponseSchema: A schema containing updated user details and a success message.
+        ApiResponseSchema: A schema indicating failure if the user is not found or update fails.
+    """
     try:
         user = User.objects.get(id=user_id)
         if user.is_superuser:
@@ -102,6 +138,16 @@ def update_user(request, user_id: int, payload: UserSchema):
 
 @router.delete("/{user_id}", response=ApiResponseSchema,auth=CustomJWTAuth())
 def delete_user(request, user_id: int):
+    """
+    Delete a specific user by their ID. Only accessible by superusers or user themselves.
+
+    Args:
+        request: The HTTP request object.
+        user_id (int): The ID of the user to delete.
+
+    Returns:
+        ApiResponseSchema: A schema indicating success or failure of the delete operation.
+    """
     try:
         user = User.objects.get(id=user_id)
         user.delete()
