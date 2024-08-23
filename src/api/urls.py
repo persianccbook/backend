@@ -3,6 +3,7 @@ from ninja_extra import NinjaExtraAPI
 from ninja import Swagger
 from django.urls import path
 from .user_api import router as users_router
+from .auth_api import router as auth_router
 from ninja.errors import ValidationError,AuthenticationError,HttpError
 from .utils import api_response
 
@@ -30,6 +31,7 @@ def authemtication_errors(request, exc):
         )
 # routers
 api.add_router("/users/",users_router)
+api.add_router("/auth/",auth_router)
 
 urlpatterns = [
     path("api/v1/", api.urls),
