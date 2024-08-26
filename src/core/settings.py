@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-=6t)*3^_2hv2z6(&rs@ct)xx)=91y@&%l$k4r8*pj%zd=4pg7*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -51,11 +51,12 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'api.middleware.FormatExceptionMiddleware',
+    'api.auth_api.CsrfProtectMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -141,11 +142,12 @@ MEDIA_ROOT = BASE_DIR.joinpath('media')
 MEDIA_URL = '/media/'
 
 # Cors setting
+CSRF_USE_SESSIONS=True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]  # React app URL
 CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
 
-FRONTEND_URL = '127.0.0.1:5173'
+FRONTEND_URL = 'http://localhost:5173'
 
 # JWT Settings
 NINJA_JWT = {
@@ -153,3 +155,6 @@ NINJA_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     # Refresh token lifetime
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+CORS_ALLOW_HEADERS = (
+   "*",
+)

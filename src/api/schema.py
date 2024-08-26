@@ -8,7 +8,7 @@ class ErrorSchema(Schema):
 
 class DataSchema(Schema):
     message: str
-    payload: Optional[Any] = None
+    payload: Optional[dict] = None
     error: Optional[ErrorSchema] = None
 
 class ApiResponseSchema(Schema):
