@@ -157,3 +157,5 @@ NINJA_JWT = {
 CORS_ALLOW_HEADERS = (
    "*",
 )
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
