@@ -143,10 +143,10 @@ MEDIA_URL = '/media/'
 # Cors setting
 CSRF_USE_SESSIONS=True
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]  # React app URL
-CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
+CORS_ALLOWED_ORIGINS = ["http://localhost"]  # React app URL
+CSRF_TRUSTED_ORIGINS = ['http://localhost']
 
-FRONTEND_URL = 'http://localhost:5173'
+FRONTEND_URL = 'http://localhost'
 
 # JWT Settings
 NINJA_JWT = {
