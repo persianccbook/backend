@@ -3,9 +3,9 @@ from .utils import api_response
 from ninja.errors import HttpError
 
 class CustomJWTAuth(JWTAuth):
-    def authenticate(self, request):
+    def authenticate(self, request,token):
         try:
-            user = super().authenticate(request)
+            user = super().authenticate(request,token)
             if not user:
                 raise HttpError(401, "Unauthorized access!")
             return user
