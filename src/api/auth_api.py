@@ -108,8 +108,8 @@ def register(request, payload: SignInSchema):
     """
     try:
         # Create the user
-        user = User.objects.create_user(username=payload.email, email=payload.email, password=payload.password)
-        user.is_active = False  # Mark the user as inactive until email verification
+        user = User.objects.create_user( email=payload.email, password=payload.password)
+        user.is_verified = False  # Mark the user as inactive until email verification
         user.save()
 
         # Generate email verification token
@@ -163,7 +163,7 @@ def verify_email(request, payload: EmailVerificationSchema):
             return {"success": False, "message": "Invalid token"}
 
         # Activate the user's account
-        user.is_active = True
+        user.is_verified = True
         user.save()
 
         return api_response(
