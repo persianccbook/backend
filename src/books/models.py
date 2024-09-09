@@ -66,7 +66,7 @@ class Book(models.Model):
 class Chapter(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='chapters')
     title = models.CharField(max_length=200)
-    chapter_number = models.IntegerField(unique=True)
+    chapter_number = models.IntegerField()
     created = models.DateField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
 
@@ -74,13 +74,14 @@ class Chapter(models.Model):
         return f"{self.book.title} - {self.title}"
 
     class Meta:
+        unique_together = ('book', 'chapter_number')
         ordering = ['chapter_number']
 
 class Page(models.Model):
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name='pages')
     content = models.TextField(blank=True)
     title = models.CharField(max_length=200)
-    page_number = models.IntegerField(unique=True)
+    page_number = models.IntegerField()
     created = models.DateField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
 
@@ -88,4 +89,5 @@ class Page(models.Model):
         return f"Page {self.page_number} of {self.chapter.title}"
 
     class Meta:
+        unique_together = ('chapter', 'page_number')
         ordering = ['page_number']
