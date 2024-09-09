@@ -30,6 +30,62 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def get_book_contents(self):
+        chapters = self.chapters.all().order_by('chapter_number')
+        chapters_with_pages = []
+        for chapter in chapters:
+            pages = chapter.pages.all().order_by('page_number')
+            chapter_data = {
+                'id': chapter.id,
+                'title': chapter.title,
+                'description': chapter.description,
+                'chapter_number': chapter.chapter_number,
+                'pages': [
+                    {
+                        'id': page.id,
+                        'content': page.content,
+                        'page_number': page.page_number
+                    } for page in pages
+                ]
+            }
+            chapters_with_pages.append(chapter_data)
+        book_data = {
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'chapters': chapters_with_pages
+        }
+        return book_data
 
     class Meta:
         ordering = ['title']
+
+
+
+class Chapter(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='chapters')
+    title = models.CharField(max_length=200)
+    chapter_number = models.IntegerField(unique=True)
+    created = models.DateField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.book.title} - {self.title}"
+
+    class Meta:
+        ordering = ['chapter_number']
+
+class Page(models.Model):
+    chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name='pages')
+    content = models.TextField(blank=True)
+    title = models.CharField(max_length=200)
+    page_number = models.IntegerField(unique=True)
+    created = models.DateField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
+
+    def __str__(self):
+        return f"Page {self.page_number} of {self.chapter.title}"
+
+    class Meta:
+        ordering = ['page_number']
