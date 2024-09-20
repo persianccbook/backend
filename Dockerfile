@@ -5,10 +5,10 @@ FROM python:alpine
 WORKDIR /app
 
 # Copy the requirements file
-COPY src/requirements.txt .
+COPY src/requirments.txt .
 
 # Install dependencies
-RUN pip install -r requirements.txt
+RUN pip install -r requirments.txt
 
 # Copy the application code
 COPY src/* .
