@@ -43,7 +43,7 @@ def get_all_users(request):
             error="Only Admins can access all users",
             status_code=403
         )
-        
+
 
 @router.get("/{user_id}", response=UserSchema,auth=CustomJWTAuth())
 def get_user(request, user_id: int):
@@ -76,7 +76,7 @@ def get_user(request, user_id: int):
                 error="No user with this user id exists.",
                 status_code=404
             )
-        
+
 @router.put("/{user_id}", response={200: UserSchema, 404: str},auth=CustomJWTAuth())
 def update_user(request, user_id: int, payload: UserSchema):
     """
@@ -148,7 +148,7 @@ def delete_user(request, user_id: int):
     Returns:
         ApiResponseSchema: A schema indicating success or failure of the delete operation.
     """
-    try: 
+    try:
         user = User.objects.get(id=user_id)
         if user.is_superuser or user == request.user:
             user.delete()
