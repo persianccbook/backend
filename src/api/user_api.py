@@ -33,7 +33,7 @@ def get_all_users(request):
         return api_response(
             success=True,
             message="User fetched successfully.",
-            payload=users_data,
+            payload={"users":users_data},
             status_code=200
         )
     else:
