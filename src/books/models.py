@@ -1,6 +1,15 @@
+import uuid
 from django.db import models
 from django.utils import timezone
 from users.models import User
+from django.db.models import Avg
+from django.core.validators import MinValueValidator, MaxValueValidator
+
+# TODO: clean up image when image changes
+
+def upload_book_cover(instance, filename):
+    hashed_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, str(instance.id)).hex
+    return f"book_covers/cover-{hashed_uuid}.{filename.split('.')[-1]}"
 
 # Create your models here.
 class Genre(models.Model):
@@ -9,7 +18,7 @@ class Genre(models.Model):
     description = models.TextField(blank=True)
 
     def __str__(self):
-        return self.name
+        return self.title
     
 class Book(models.Model):
     STATUS_CHOICES = (
@@ -25,12 +34,19 @@ class Book(models.Model):
     updated = models.DateField(auto_now=True)
     genre = models.ManyToManyField(Genre, related_name='books')
     description = models.TextField(blank=True)
-    cover_image = models.ImageField(upload_to='book_covers/', blank=True, null=True)
+    cover_image = models.ImageField(upload_to=upload_book_cover, blank=True, null=True)
     status = models.CharField(max_length=1,choices=STATUS_CHOICES)
 
     def __str__(self):
         return self.title
-    
+
+    def average_rating(self):
+        if self.rating.exists():
+            return str(self.rating.aggregate(avg_rating=Avg('rating'))['avg_rating'])
+        else:
+            return '0'
+
+
     def get_book_contents(self):
         chapters = self.chapters.all().order_by('chapter_number')
         chapters_with_pages = []
@@ -91,3 +107,15 @@ class Page(models.Model):
     class Meta:
         unique_together = ('chapter', 'page_number')
         ordering = ['page_number']
+
+class Rating(models.Model):
+    book = models.ForeignKey(Book,on_delete=models.CASCADE,related_name='rating')
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    # description = models.TextField(blank=True,null=True)
+    rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+
+    class Meta:
+        unique_together = ('book','user')
+
+    def __str__(self):
+        return f"{self.user} rate {self.book} {self.rating}Star(s)"
