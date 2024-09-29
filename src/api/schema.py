@@ -1,6 +1,7 @@
-from ninja import ModelSchema,Schema
+from ninja import Field, ModelSchema,Schema
 from pydantic import BaseModel,EmailStr
-from typing import Any, Optional
+from typing import Optional
+from books.models import Book
 from users.models import User
 
 class ErrorSchema(Schema):
@@ -41,3 +42,13 @@ class PasswordResetConfirmSchema(Schema):
     user_id: str
     new_password: str
     confirm_new_password: str
+
+class BookSchema(ModelSchema):
+    class Meta:
+        model = Book
+        fields = ['id','title','description','genre','authors','cover_image','published']
+
+    rating: str = Field(alias='average_rating',default=None)
+    
+   
+    
