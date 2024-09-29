@@ -1,7 +1,8 @@
 from django.contrib import admin
-from.models import Book, Chapter, Page
+from.models import Book, Chapter, Page, Genre
 from django.core.exceptions import ValidationError
 # Register your models here.
+
 class PageInline(admin.TabularInline):
     model = Page
     # fields = ('page_number', 'content')
@@ -16,9 +17,22 @@ class ChapterInline(admin.TabularInline):
     show_change_link=True
 
 class BookAdmin(admin.ModelAdmin):
-    fields = ('title', 'description')
+    fields = (
+        # 'id',
+'title',
+'authors',
+'genre',
+'description',
+'cover_image',
+'status'
+)
     inlines = [ChapterInline]
 
+
+class GenreAdmin(admin.ModelAdmin):
+    fields=('title','description')
+
+admin.site.register(Genre, GenreAdmin)
 admin.site.register(Book, BookAdmin)
 admin.site.register(Chapter)
 admin.site.register(Page)
