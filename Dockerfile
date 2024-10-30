@@ -16,5 +16,5 @@ COPY src/* .
 # Expose the port for Gunicorn
 EXPOSE 8000
 
-# Run Gunicorn when the container starts
-CMD ["gunicorn", "--workers=3", "--bind=0.0.0.0:8000", "core.wsgi:application"]
+# Run migrations and then start Gunicorn
+CMD ["sh", "-c", "python manage.py migrate && gunicorn --workers=3 --bind=0.0.0.0:8000 core.wsgi:application"]
