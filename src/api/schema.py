@@ -1,7 +1,7 @@
 from ninja import Field, ModelSchema,Schema
 from pydantic import BaseModel,EmailStr
 from typing import Optional
-from books.models import Book
+from books.models import Book, Chapter, Genre, Page
 from users.models import User
 
 class ErrorSchema(Schema):
@@ -50,5 +50,20 @@ class BookSchema(ModelSchema):
 
     rating: str = Field(alias='average_rating',default=None)
     
-   
+
+class ChapterSchema(ModelSchema):
+    class Meta:
+        model = Chapter
+        fields = ['book','title','chapter_number','created','updated']
+
+
+class PageSchema(ModelSchema):
+    class Meta:
+        model = Page
+        fields = ['chapter','content','title','page_number','created','updated']
+
+class GenreSchema(ModelSchema):
+    class Meta:
+        model = Genre
+        fields = ['id','title','description']
     
