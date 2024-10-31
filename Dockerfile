@@ -10,6 +10,7 @@ COPY src/requirments.txt .
 # Install dependencies
 RUN pip install -r requirments.txt
 
+RUN pip install gunicorn
 # Copy the application code
 COPY src/* .
 
