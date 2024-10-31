@@ -19,4 +19,4 @@ EXPOSE 8000
 
 # Run migrations and then start Gunicorn
 # CMD ["sh", "-c", "python manage.py migrate && gunicorn --workers=3 --bind=0.0.0.0:8000 core.wsgi:application"]
-ENTRYPOINT [ "docker-entrypoint.sh" ]
+ENTRYPOINT [ "./docker-entrypoint.sh" ]
