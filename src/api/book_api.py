@@ -1,5 +1,5 @@
 from ninja import Router
-from api.schema import BookSchema, ChapterSchema, GenreSchema, PageSchema
+from api.schema import ApiResponseSchema, BookSchema, ChapterSchema, GenreSchema, PageSchema, PaginatedBooksSchema
 from api.utils import api_response
 from books.models import Book
 from typing import List
@@ -11,12 +11,29 @@ router = Router(tags=["books"])
 
 # TODO: make all returns use api_response
 
-@router.get("/get_all_books", response=List[BookSchema])
+@router.get("/get_all_books", response=PaginatedBooksSchema)
 def get_all_books(request, limit: int = 1, offset: int = 0):
     try:
-        books = Book.objects.all()[offset * limit : offset * limit + limit]
+        books = Book.objects.all()
+        if limit*offset>=len(books):
+            return api_response(success=False,message="This page is empty",error='empty page',status_code=404) 
+        if len(books)==limit*offset+limit:
+            next = -1
+        elif len(books)<limit*offset+limit and len(books)>=limit*offset:
+            next = -1
+            limit = len(books)%limit
+        else:
+            next = offset+1 
+        if offset==0:
+            prev=-1
+        else:
+            prev = offset-1
+        
+        books=books[offset * limit : offset * limit + limit]
         books_data = [BookSchema.from_orm(book) for book in books]
-        return books_data
+        # return books_data
+        return api_response(success=True,message="all books fetched successfully",payload={'books':books_data,'next_page':next,'perv_page':prev})   
+
     except Exception as e:
         return api_response(
             success=False, message="Error occurd", error=e, status_code=503
