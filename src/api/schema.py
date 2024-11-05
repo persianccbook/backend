@@ -75,6 +75,20 @@ class BookSchema(ModelSchema):
 
     rating: str = Field(alias="average_rating", default=None)
 
+class SingleBookDataSchema(DataSchema):
+    payload:BookSchema
+
+class SingleBookSchema(ApiResponseSchema):
+    data:SingleBookDataSchema
+
+class TopBookSchema(Schema):
+    books:list[BookSchema]
+
+class TopBooksDataSchema(DataSchema):
+    payload:TopBookSchema
+
+class TopBooksSchema(ApiResponseSchema):
+    data:TopBooksDataSchema
 
 class PaginatedBooks(Schema):
     books: list[BookSchema]

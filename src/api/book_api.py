@@ -1,5 +1,5 @@
 from ninja import Router
-from api.schema import ApiResponseSchema, BookSchema, ChapterSchema, GenreSchema, PageSchema, PaginatedBooksSchema
+from api.schema import ApiResponseSchema, BookSchema, ChapterSchema, GenreSchema, PageSchema, PaginatedBooksSchema, SingleBookSchema, TopBooksSchema
 from api.utils import api_response
 from books.models import Book
 from typing import List
@@ -40,7 +40,7 @@ def get_all_books(request, limit: int = 1, offset: int = 0):
         )
 
 
-@router.get("/get_book", response=BookSchema)
+@router.get("/get_book", response=SingleBookSchema)
 def get_book(request, book_id: int):
     try:
             book = Book.objects.get(id=book_id)
@@ -60,7 +60,7 @@ def get_book(request, book_id: int):
         )
                     
 
-@router.get("/top_books", response=List[BookSchema])
+@router.get("/top_books", response=TopBooksSchema)
 def top_books(request):
     try:
         # TODO: use rating to pick top 3 books after rating implementation completed
@@ -68,7 +68,7 @@ def top_books(request):
         if len(books) > 3 :
             books= books[0:3]
         books_data = [BookSchema.from_orm(book) for book in books]
-        return books_data
+        return api_response(success=True,message="top books fetched successfully",payload={'books':books_data})
     except Exception as e:
         return api_response(
             success=False, message="Error occurd", error=e, status_code=503
