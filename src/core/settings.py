@@ -167,4 +167,12 @@ CORS_ALLOW_HEADERS = (
    "*",
 )
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Setup email backend
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL =  str(os.getenv('DEFAULT_FROM_EMAIL'))
+EMAIL_HOST =  str(os.getenv('EMAIL_HOST'))
+EMAIL_PORT = str(os.getenv('EMAIL_PORT'))
+EMAIL_USE_TLS = (os.environ.get('EMAIL_USE_TLS','False') == 'True')
+EMAIL_HOST_USER =  str(os.getenv('EMAIL_HOST_USER'))
+EMAIL_HOST_PASSWORD = str(os.getenv('EMAIL_HOST_PASSWORD'))
+SERVER_EMAIL = str(os.getenv('SERVER_EMAIL'))
