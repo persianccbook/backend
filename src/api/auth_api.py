@@ -114,7 +114,7 @@ def register(request, payload: SignInSchema):
 
         # Generate email verification token
         token = default_token_generator.make_token(user)
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        uid = urlsafe_base64_encode(force_bytes(user.id))
 
         # Construct the email verification URL
         verification_url = f"{settings.FRONTEND_URL}/verify-email/{uid}/{token}/"
@@ -156,7 +156,7 @@ def verify_email(request, payload: EmailVerificationSchema):
     try:
         # Decode the user ID from the uid
         user_id = force_str(urlsafe_base64_decode(payload.user_id))
-        user = User.objects.get(pk=user_id)
+        user = User.objects.get(id=user_id)
 
         # Verify the token
         if not default_token_generator.check_token(user, payload.token):
@@ -265,7 +265,7 @@ def request_password_reset(request, data: PasswordResetRequestSchema):
         )
     # Generate token
     token = default_token_generator.make_token(user)
-    user_id = urlsafe_base64_encode(force_bytes(user.pk))  # Encode the user's ID
+    user_id = urlsafe_base64_encode(force_bytes(user.id))  # Encode the user's ID
 
     # Construct the password reset URL
     password_reset_url = f"{settings.FRONTEND_URL}/reset-password-confirm/{user_id}/{token}/"
@@ -302,7 +302,7 @@ def password_reset_confirm(request, data: PasswordResetConfirmSchema):
     # Decode the user ID from the uid
     try:
         user_id = force_str(urlsafe_base64_decode(data.user_id))
-        user = User.objects.get(pk=user_id)
+        user = User.objects.get(id=user_id)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         return api_response(
             success=False,
