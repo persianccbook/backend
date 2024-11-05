@@ -64,7 +64,7 @@ def get_book(request, book_id: int):
 def top_books(request):
     try:
         # TODO: use rating to pick top 3 books after rating implementation completed
-        books = Book.objects.all()
+        books = Book.objects.all().order_by('-rating', 'published')
         if len(books) > 3 :
             books= books[0:3]
         books_data = [BookSchema.from_orm(book) for book in books]
