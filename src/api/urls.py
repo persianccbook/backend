@@ -5,7 +5,8 @@ from django.urls import path
 from .user_api import router as users_router
 from .auth_api import router as auth_router
 from .book_api import router as book_router
-from ninja.errors import ValidationError,AuthenticationError,HttpError
+from .author_api import router as author_router
+from ninja.errors import ValidationError,AuthenticationError
 from .utils import api_response
 
 api = NinjaExtraAPI(title='PersianCCBooks',docs=Swagger())
@@ -34,6 +35,7 @@ def authemtication_errors(request, exc):
 api.add_router("/users/",users_router)
 api.add_router("/auth/",auth_router)
 api.add_router("/books/",book_router)
+api.add_router("/authors/",author_router)
 
 urlpatterns = [
     path("api/v1/", api.urls),
