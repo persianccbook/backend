@@ -107,6 +107,15 @@ def register(request, payload: SignInSchema):
         ApiResponseSchema: A schema indicating success or failure of the registration process.
     """
     try:
+        # Check if user with same email already exists
+        if User.objects.filter(email=payload.email).exists():
+            return api_response(
+                success=False,
+                message="Email already in use. Please try a different email.",
+                payload=None,
+                status_code=200
+            )
+
         # Create the user
         user = User.objects.create_user( email=payload.email, password=payload.password)
         user.is_verified = False  # Mark the user as inactive until email verification
