@@ -1,5 +1,5 @@
 from ninja import Router
-from api.schema import ApiResponseSchema, BookSchema, ChapterSchema, GenreSchema, PageSchema, PaginatedBooksSchema, SingleBookSchema, TopBooksSchema
+from api.schema import BookSchema, ChapterSchema, GenreSchema, PageSchema, PaginatedBooksSchema, SingleBookSchema, TopBooksSchema
 from api.utils import api_response
 from books.models import Book
 from typing import List
