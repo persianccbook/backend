@@ -1,3 +1,4 @@
+from typing import List
 from ninja import Field, ModelSchema, Schema
 from api.schema import ApiResponseSchema, DataSchema
 from books.models import Book, Chapter, Page
@@ -58,8 +59,20 @@ class ChapterSchema(ModelSchema):
         model = Chapter
         fields = ["book", "title", "chapter_number", "created", "updated"]
 
+class ChapterDataSchema(DataSchema):
+    payload:List[ChapterSchema]
+
+class BookChaptersSchema(ApiResponseSchema):
+    data:ChapterDataSchema
 
 class PageSchema(ModelSchema):
     class Meta:
         model = Page
         fields = ["chapter", "content", "title", "page_number", "created", "updated"]
+
+class PageDataSchema(DataSchema):
+    payload:List[PageSchema]
+
+class BookPagesSchema(ApiResponseSchema):
+    data:PageDataSchema
+
