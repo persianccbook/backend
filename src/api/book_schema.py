@@ -59,8 +59,11 @@ class ChapterSchema(ModelSchema):
         model = Chapter
         fields = ["book", "title", "chapter_number", "created", "updated"]
 
+class BookChaptersSchema(Schema):
+    chapters:list[ChapterSchema]
+
 class ChapterDataSchema(DataSchema):
-    payload:List[ChapterSchema]
+    payload:BookChaptersSchema
 
 class BookChaptersSchema(ApiResponseSchema):
     data:ChapterDataSchema
@@ -70,8 +73,11 @@ class PageSchema(ModelSchema):
         model = Page
         fields = ["chapter", "content", "title", "page_number", "created", "updated"]
 
+class ChapterPagesSchema(Schema):
+    pages:list[PageSchema]
+
 class PageDataSchema(DataSchema):
-    payload:List[PageSchema]
+    payload:ChapterPagesSchema
 
 class BookPagesSchema(ApiResponseSchema):
     data:PageDataSchema
