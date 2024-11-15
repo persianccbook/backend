@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'books',
+    'announcement',
     'api',
     'ninja',
     'ninja_extra',
