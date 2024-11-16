@@ -6,6 +6,7 @@ from .user_api import router as users_router
 from .auth_api import router as auth_router
 from .book_api import router as book_router
 from .author_api import router as author_router
+from .info_api import router as info_router
 from ninja.errors import ValidationError,AuthenticationError
 from .utils import api_response
 
@@ -36,6 +37,7 @@ api.add_router("/users/",users_router)
 api.add_router("/auth/",auth_router)
 api.add_router("/books/",book_router)
 api.add_router("/authors/",author_router)
+api.add_router("/info/",info_router)
 
 urlpatterns = [
     path("api/v1/", api.urls),
