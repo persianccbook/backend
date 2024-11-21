@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.utils import timezone
+from books.managers import ReleasedManager
 from users.models import User
 from django.db.models import Avg
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -76,6 +77,9 @@ class Book(models.Model):
 
     class Meta:
         ordering = ['title']
+
+    objects = models.Manager()
+    released = ReleasedManager()
 
 
 

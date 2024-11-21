@@ -73,7 +73,7 @@ def get_author_books(request, author_id: int, limit: int = 1, offset: int = 0):
     try:
         author = User.objects.filter(authored_books__isnull=False).distinct().get(id=author_id)
         try:
-            books = Book.objects.filter(authors__id=author.id)          
+            books = Book.released.filter(authors__id=author.id)          
             if limit*offset>=len(books):
                 return api_response(success=False,message="This page is empty",error='empty page',status_code=404) 
             if len(books)==limit*offset+limit:
