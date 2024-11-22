@@ -13,6 +13,7 @@ from api.schema import GenreSchema
 from api.utils import api_response
 from books.models import Book
 from typing import List
+from django.views.decorators.cache import cache_page
 
 # ============================
 # Books Endpoints
@@ -23,6 +24,7 @@ router = Router(tags=["books"])
 
 
 @router.get("/get_all_books", response=PaginatedBooksSchema)
+@cache_page(60 * 60)
 def get_all_books(request, limit: int = 1, offset: int = 0):
     try:
         books = Book.released.all()
@@ -61,6 +63,7 @@ def get_all_books(request, limit: int = 1, offset: int = 0):
 
 
 @router.get("/get_book", response=SingleBookSchema)
+@cache_page(60 * 60)
 def get_book(request, book_id: int):
     try:
         book = Book.released.get(id=book_id)
@@ -81,6 +84,7 @@ def get_book(request, book_id: int):
 
 
 @router.get("/top_books", response=TopBooksSchema)
+@cache_page(60 * 60)
 def top_books(request):
     try:
         # TODO: use rating to pick top 3 books after rating implementation completed
@@ -103,6 +107,7 @@ def top_books(request):
 
 
 @router.get("/get_book_chapters", response=BookChaptersSchema)
+@cache_page(60 * 60)
 def get_book_chapters(request, book_id: int):
     try:
         book = Book.released.get(id=book_id)
@@ -121,6 +126,7 @@ def get_book_chapters(request, book_id: int):
 
 
 @router.get("/get_chapter_pages", response=BookPagesSchema)
+@cache_page(60 * 60)
 def get_chapter_pages(request, book_id: int, chapter_number: int):
     try:
         book = Book.released.get(id=book_id)
@@ -136,7 +142,6 @@ def get_chapter_pages(request, book_id: int, chapter_number: int):
         return api_response(
             success=False, message="Error occurd", error=e, status_code=503
         )
-
 
 
 @router.get("/get_genres", response=List[GenreSchema])
