@@ -126,7 +126,7 @@ def get_book_chapters(request, book_id: int):
 
 
 @router.get("/get_chapter_pages", response=BookPagesSchema)
-@cache_page(60 * 60)
+@cache_page(60*60)
 def get_chapter_pages(request, book_id: int, chapter_number: int):
     try:
         book = Book.released.get(id=book_id)

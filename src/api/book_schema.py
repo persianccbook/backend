@@ -71,7 +71,9 @@ class BookChaptersSchema(ApiResponseSchema):
 class PageSchema(ModelSchema):
     class Meta:
         model = Page
-        fields = ["chapter", "content", "title", "page_number", "created", "updated"]
+        fields = ["chapter", "title", "page_number", "created", "updated"]
+
+    content: str = Field(alias="get_content", default=None)
 
 class ChapterPagesSchema(Schema):
     pages:list[PageSchema]
