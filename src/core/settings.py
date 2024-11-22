@@ -118,6 +118,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Cache
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": os.environ.get('REDIS_LOCATION'),
+    }
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
