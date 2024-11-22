@@ -1,9 +1,6 @@
 # Use the official Python Alpine image as a base
 FROM python:alpine
 
-# install sdk for building packages
-RUN apk add alpine-sdk  pkg-config
-
 # Set the working directory to /app
 WORKDIR /app
 
