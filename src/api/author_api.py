@@ -4,6 +4,7 @@ from api.book_schema import BookSchema, PaginatedBooksSchema
 from api.utils import api_response
 from books.models import Book
 from users.models import User
+from django.views.decorators.cache import cache_page
 
 # ============================
 # author Endpoints
@@ -12,6 +13,7 @@ router = Router(tags=["author"])
 
 
 @router.get("/get_all_authors", response=PaginatedAuthorsSchema)
+@cache_page(60 * 60)
 def get_all_authors(request, limit: int = 1, offset: int = 0):
     try:
         authors = User.objects.filter(authored_books__isnull=False).distinct()
@@ -50,9 +52,14 @@ def get_all_authors(request, limit: int = 1, offset: int = 0):
 
 
 @router.get("/get_author", response=SingleAuthorSchema)
+@cache_page(60 * 60)
 def get_author(request, author_id: int):
     try:
-        author = User.objects.filter(authored_books__isnull=False).distinct().get(id=author_id)
+        author = (
+            User.objects.filter(authored_books__isnull=False)
+            .distinct()
+            .get(id=author_id)
+        )
         author_data = AuthorSchema.from_orm(author)
         return api_response(
             success=True,
@@ -68,30 +75,45 @@ def get_author(request, author_id: int):
             status_code=404,
         )
 
+
 @router.get("/get_author_books", response=PaginatedBooksSchema)
+@cache_page(60 * 60)
 def get_author_books(request, author_id: int, limit: int = 1, offset: int = 0):
     try:
-        author = User.objects.filter(authored_books__isnull=False).distinct().get(id=author_id)
+        author = (
+            User.objects.filter(authored_books__isnull=False)
+            .distinct()
+            .get(id=author_id)
+        )
         try:
-            books = Book.released.filter(authors__id=author.id)          
-            if limit*offset>=len(books):
-                return api_response(success=False,message="This page is empty",error='empty page',status_code=404) 
-            if len(books)==limit*offset+limit:
+            books = Book.released.filter(authors__id=author.id)
+            if limit * offset >= len(books):
+                return api_response(
+                    success=False,
+                    message="This page is empty",
+                    error="empty page",
+                    status_code=404,
+                )
+            if len(books) == limit * offset + limit:
                 next = -1
-            elif len(books)<limit*offset+limit and len(books)>=limit*offset:
+            elif len(books) < limit * offset + limit and len(books) >= limit * offset:
                 next = -1
-                limit = len(books)%limit
+                limit = len(books) % limit
             else:
-                next = offset+1 
-            if offset==0:
-                prev=-1
+                next = offset + 1
+            if offset == 0:
+                prev = -1
             else:
-                prev = offset-1
-            
-            books=books[offset * limit : offset * limit + limit]
+                prev = offset - 1
+
+            books = books[offset * limit : offset * limit + limit]
             books_data = [BookSchema.from_orm(book) for book in books]
             # return books_data
-            return api_response(success=True,message="all books fetched successfully",payload={'books':books_data,'next_page':next,'perv_page':prev})   
+            return api_response(
+                success=True,
+                message="all books fetched successfully",
+                payload={"books": books_data, "next_page": next, "perv_page": prev},
+            )
 
         except Exception as e:
             return api_response(
