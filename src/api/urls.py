@@ -9,8 +9,12 @@ from .author_api import router as author_router
 from .info_api import router as info_router
 from ninja.errors import ValidationError,AuthenticationError
 from .utils import api_response
+from ninja.throttling import AnonRateThrottle, AuthRateThrottle
 
-api = NinjaExtraAPI(title='PersianCCBooks',docs=Swagger())
+api = NinjaExtraAPI(title='PersianCCBooks',docs=Swagger(),throttle=[
+        AnonRateThrottle('5/s'),
+        AuthRateThrottle('20/s'),
+    ])
 
 # jwt controler
 api.register_controllers(NinjaJWTDefaultController)
