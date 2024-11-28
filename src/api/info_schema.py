@@ -1,4 +1,5 @@
 from ninja import ModelSchema
+from pydantic import BaseModel, EmailStr
 from announcement.models import Announcement
 from api.schema import ApiResponseSchema, DataSchema
 
@@ -19,3 +20,14 @@ class SingleAnnouncementDataSchema(DataSchema):
 
 class SingleAnnouncementSchema(ApiResponseSchema):
     data: SingleAnnouncementDataSchema
+
+
+class ContactUsMessage(BaseModel):
+    email: EmailStr
+    message: str
+
+class ContactUsDataSchema(DataSchema):
+    payload:ContactUsMessage
+
+class ContactUsSchema(ApiResponseSchema):
+    data:ContactUsDataSchema
