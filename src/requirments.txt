@@ -10,3 +10,4 @@ python-dotenv==1.0.1
 redis==5.2.0
 django-quill-editor==0.1.42
 markdownify==0.13.1
+whitenoise
